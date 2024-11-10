@@ -1,6 +1,4 @@
-import os
-
-from python_e2e_tests.helper.base_database import BaseDatabase
+from python_e2e_tests.databases.base_database import BaseDatabase
 
 from sqlalchemy import select
 
@@ -8,9 +6,8 @@ from python_e2e_tests.models.user_userdata import UserUserdata
 
 
 class NifflerUserdataDB(BaseDatabase):
-    def __init__(self):
-        self.db_url = f'postgresql://{os.getenv("DB_NIFFLER_USERDATA_PASSWORD")}:{os.getenv("DB_NIFFLER_USERDATA_PASSWORD")}@{os.getenv("HOST_DB_IN_DOCKER")}:{os.getenv("PORT_DB")}/{os.getenv("DB_NAME_NIFFLER_USERDATA")}'
-        super().__init__(self.db_url)
+    def __init__(self, config):
+        super().__init__(config)
 
     def add_user(self, user):
         session = self.get_session()

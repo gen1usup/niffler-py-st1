@@ -1,0 +1,41 @@
+{
+  "dev": {
+    "auth_url": "http://auth.niffler.dc:9000",
+    "base_url": "http://frontend.niffler.dc",
+    "database": {
+      "niffler_userdata": {
+        "db_name": "niffler-userdata",
+        "user": "postgres",
+        "password": "secret",
+        "port": 5432,
+        "host_in_docker": "127.0.0.1",
+        "pool_size": 10
+      },
+      "niffler_spend": {
+        "db_name": "niffler-spend",
+        "user": "postgres",
+        "password": "secret",
+        "port": 5432,
+        "host_in_docker": "127.0.0.1",
+        "pool_size": 10
+      },
+      "niffler_currency": {
+        "db_name": "niffler-currency",
+        "user": "postgres",
+        "password": "secret",
+        "port": 5432,
+        "host_in_docker": "127.0.0.1",
+        "pool_size": 10
+      },
+      "niffler_auth": {
+        "db_name": "niffler-auth",
+        "user": "postgres",
+        "password": "secret",
+        "port": 5432,
+        "host_in_docker": "127.0.0.1",
+        "pool_size": 10
+      }
+  }
+},
+  "prod": {}
+}

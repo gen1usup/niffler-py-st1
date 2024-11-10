@@ -1,0 +1,10 @@
+playwright
+pytest
+python-dotenv
+Django
+Faker
+SQLAlchemy
+requests
+fastapi-pagination
+asgiref
+beautifulsoup4
