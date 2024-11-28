@@ -4,15 +4,13 @@ from sqlalchemy import create_engine, select
 from sqlalchemy.orm import sessionmaker
 
 
-niffler_currency_db = f'postgresql://{os.getenv("DB_NIFFLER_CURRENCY_USER")}:{os.getenv("DB_NIFFLER_CURRENCY_PASSWORD")}@{os.getenv("HOST_DB_IN_DOCKER")}:{os.getenv("PORT_DB")}/{os.getenv("DB_NAME_NIFFLER_CURRENCY")}'
-niffler_auth_db = f'postgresql://{os.getenv("DB_NIFFLER_AUTH_USER")}:{os.getenv("DB_NIFFLER_AUTH_PASSWORD")}@{os.getenv("HOST_DB_IN_DOCKER")}:{os.getenv("PORT_DB")}/{os.getenv("DB_NAME_NIFFLER_AUTH")}'
-niffler_spend_db = f'postgresql://{os.getenv("DB_NIFFLER_SPEND_USER")}:{os.getenv("DB_NIFFLER_SPEND_PASSWORD")}@{os.getenv("HOST_DB_IN_DOCKER")}:{os.getenv("PORT_DB")}/{os.getenv("DB_NAME_NIFFLER_SPEND")}'
-niffler_userdata_db =f'postgresql://{os.getenv("DB_NIFFLER_USERDATA_PASSWORD")}:{os.getenv("DB_NIFFLER_USERDATA_PASSWORD")}@{os.getenv("HOST_DB_IN_DOCKER")}:{os.getenv("PORT_DB")}/{os.getenv("DB_NAME_NIFFLER_USERDATA")}'
-
 class BaseDatabase:
-    def __init__(self, db_url):
+    def __init__(self, config):
         # Инициализация движка и сессии
-        self.engine = create_engine(db_url)
+        for key, value in config.items():
+            setattr(self, key, value)
+        self.db_url = f'postgresql://{self.user}:{self.password}@{self.host_in_docker}:{self.port}/{self.db_name}'
+        self.engine = create_engine(self.db_url)
         self.Session = sessionmaker(bind=self.engine)
 
     def get_session(self):

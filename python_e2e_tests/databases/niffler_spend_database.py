@@ -1,17 +1,14 @@
-import os
-
 from sqlalchemy import select
 from sqlalchemy.orm import joinedload
 
-from python_e2e_tests.helper.base_database import BaseDatabase
+from python_e2e_tests.databases.base_database import BaseDatabase
 from python_e2e_tests.models.category import Category
 from python_e2e_tests.models.spend import Spend
 
 
 class NifflerSpendDB(BaseDatabase):
-    def __init__(self):
-        self.db_url = f'postgresql://{os.getenv("DB_NIFFLER_SPEND_USER")}:{os.getenv("DB_NIFFLER_SPEND_PASSWORD")}@{os.getenv("HOST_DB_IN_DOCKER")}:{os.getenv("PORT_DB")}/{os.getenv("DB_NAME_NIFFLER_SPEND")}'
-        super().__init__(self.db_url)
+    def __init__(self, config):
+        super().__init__(config)
 
     # Методы для работы с таблицей Category
     def add_category(self, category_name, username):
