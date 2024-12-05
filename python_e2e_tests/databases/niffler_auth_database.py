@@ -42,10 +42,19 @@ class NifflerAuthDB(BaseDatabase):
         finally:
             session.close()
 
+    def get_user_by_username(self, username):
+        session = self.get_session()
+        try:
+            user = session.query(UserAuth).filter(UserAuth.username == username).one_or_none()
+            return user
+        except Exception as e:
+            print(f"Ошибка при получении пользователя: {e}")
+        finally:
+            session.close()
     def delete_user(self, user_id):
         session = self.get_session()
         try:
-            user = session.get(UserAuth, user_id)
+            user = session.query(UserAuth).filter(UserAuth.id == user_id).first()
             if user:
                 session.delete(user)
                 session.commit()
@@ -59,8 +68,19 @@ class NifflerAuthDB(BaseDatabase):
             session.close()
 
     def delete_user_data_by_username(self, username):
-        user_id = self.get_session().query(UserAuth.id).filter(UserAuth.username == username).scalar()
-        authority_ids = self.get_session().query(Authority.id).filter(Authority.user_id == user_id).all()
-        for authority_id in authority_ids:
-            self.delete_by_id(Authority, authority_id)
-        self.delete_by_id(UserAuth, user_id)
+        session = self.get_session()
+        try:
+            user_id = session.query(UserAuth.id).filter(UserAuth.username == username).scalar()
+            authority_ids = session.query(Authority.id).filter(Authority.user_id == user_id).all()
+            if user_id:
+                for authority_id in authority_ids:
+                    self.delete_by_id(Authority, authority_id)
+                self.delete_by_id(UserAuth, user_id)
+                print(f"Данные пользователя {username} удалены")
+            else:
+                print(f"Пользователь с именем {username} не найден")
+        except Exception as e:
+            session.rollback()
+            print(f"Ошибка при удалении пользователя: {e}")
+        finally:
+            session.close()

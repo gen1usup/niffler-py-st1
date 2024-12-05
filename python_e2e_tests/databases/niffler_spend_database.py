@@ -2,8 +2,8 @@ from sqlalchemy import select
 from sqlalchemy.orm import joinedload
 
 from python_e2e_tests.databases.base_database import BaseDatabase
-from python_e2e_tests.models.category import Category
-from python_e2e_tests.models.spend import Spend
+from python_e2e_tests.models.spend import Spend, Category
+
 
 
 class NifflerSpendDB(BaseDatabase):
@@ -97,5 +97,40 @@ class NifflerSpendDB(BaseDatabase):
         except Exception as e:
             session.rollback()
             print(f"Ошибка при удалении записи о расходе: {e}")
+        finally:
+            session.close()
+
+    def delete_spend_by_category_id(self, category_id):
+        session = self.get_session()
+        try:
+            query = select(Spend).where(Spend.category_id == category_id)
+            spend = session.execute(query).scalars().all()
+            if spend:
+                for s in spend:
+                    session.delete(s)
+                session.commit()
+                print(f"Записи о расходах по категории с ID {category_id} успешно удалены.")
+            else:
+                print(f"Записи о расходах по категории с ID {category_id} не найдены.")
+        except Exception as e:
+            session.rollback()
+            print(f"Ошибка при удалении записей о расходах по категории: {category_id}")
+
+    def delete_category_by_category_name(self, category_name):
+        session = self.get_session()
+        try:
+            category = session.query(Category).filter(Category.category == category_name).first()
+            if category:
+                spends = session.query(Spend).filter(Spend.category_id == category.id).all()
+                for spend in spends:
+                    session.delete(spend)
+                session.delete(category)
+                session.commit()
+                print(f"Категория {category_name} успешно удалена.")
+            else:
+                print(f"Категория {category_name} не найдена.")
+        except Exception as e:
+            session.rollback()
+            print(f"Ошибка при удалении категории: {e}")
         finally:
             session.close()

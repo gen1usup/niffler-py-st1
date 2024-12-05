@@ -3,9 +3,17 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import declarative_base, relationship
 import uuid
 
-from python_e2e_tests.models.category import Category
-
 Base = declarative_base()
+
+class Category(Base):
+    __tablename__ = 'category'
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, nullable=False)
+    category = Column(String(255), nullable=False)
+    username = Column(String(50), nullable=False)
+
+    # Используйте множественное число для названия отношения, так как это коллекция
+    spend = relationship("Spend", back_populates="category", cascade="all, delete-orphan")
 
 class Spend(Base):
     __tablename__ = 'spend'
@@ -20,6 +28,3 @@ class Spend(Base):
 
     # Связь с таблицей category (опционально для удобства работы)
     category = relationship("Category", back_populates="spend")
-
-# Добавляем обратную связь в модель Category
-Category.spend = relationship("Spend", order_by=Spend.id, back_populates="category")
