@@ -20,7 +20,7 @@ class HttpClient:
         return csrf_token
 
     def register(self, username, password, submit_password):
-        register_url = self.auth_url + self.app.paths['RegisterPage']
+        register_url = self.auth_url + self.app.paths.register_page
         csrf_token = self.get_csrf_token(register_url)
         data = {
             'username': username,
